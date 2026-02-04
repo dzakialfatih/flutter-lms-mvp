@@ -44,7 +44,7 @@ class LessonPage extends StatelessWidget {
                   Container(
                     width: double.infinity,
                     height: 200,
-                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: colorScheme.surfaceVariant),
+                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: colorScheme.surfaceContainerHighest),
                     child: Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,

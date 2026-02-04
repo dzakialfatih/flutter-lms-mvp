@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../dummy_data.dart';
 import '../models/course.dart';
 import 'course_detail_page.dart';
+import 'profile_page.dart';
 
 const double _kPagePadding = 16.0;
 
@@ -16,6 +17,20 @@ class HomePage extends StatelessWidget {
         title: const Text('Courses'),
         elevation: 0,
         centerTitle: true,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: IconButton(
+              icon: const Icon(Icons.person_outline),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ProfilePage()),
+                );
+              },
+            ),
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(_kPagePadding),
