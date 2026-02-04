@@ -1,72 +1,63 @@
 import 'package:flutter/material.dart';
 import '../dummy_data.dart';
+import '../models/course.dart';
 import 'course_detail_page.dart';
+
+const double _kPagePadding = 16.0;
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Courses'),
         elevation: 0,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: CircleAvatar(
-              backgroundColor: Theme.of(context).colorScheme.secondary,
-              child: const Icon(Icons.person),
-            ),
-          ),
-        ],
+        centerTitle: true,
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          Text(
-            'Welcome, ${dummyUser.name}!',
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Continue learning',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.grey,
-                ),
-          ),
-          const SizedBox(height: 24),
-          ...List.generate(
-            dummyCourses.length,
-            (index) {
-              final course = dummyCourses[index];
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 16),
-                child: CourseCard(
-                  course: course,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            CourseDetailPage(course: course),
-                      ),
-                    );
-                  },
-                ),
-              );
-            },
-          ),
-        ],
+      body: Padding(
+        padding: const EdgeInsets.all(_kPagePadding),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Welcome, ${dummyUser.name}!', style: Theme.of(context).textTheme.headlineSmall),
+            const SizedBox(height: 6),
+            Text('Choose a course to get started', style: Theme.of(context).textTheme.bodyMedium),
+            const SizedBox(height: 12),
+
+            // Expandable list
+            Expanded(
+              child: ListView.builder(
+                itemCount: dummyCourses.length,
+                padding: const EdgeInsets.only(top: 4, bottom: 8),
+                itemBuilder: (context, index) {
+                  final Course course = dummyCourses[index];
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: CourseCard(
+                      course: course,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => CourseDetailPage(course: course)),
+                        );
+                      },
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
 class CourseCard extends StatelessWidget {
-  final dynamic course;
+  final Course course;
   final VoidCallback onTap;
 
   const CourseCard({
@@ -79,67 +70,35 @@ class CourseCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: InkWell(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: ListTile(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: double.infinity,
-                height: 150,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  gradient: LinearGradient(
-                    colors: [
-                      Theme.of(context).primaryColor,
-                      Theme.of(context).primaryColor.withOpacity(0.6),
-                    ],
-                  ),
-                ),
-                child: Center(
-                  child: Icon(
-                    Icons.book,
-                    size: 60,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                course.title,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                course.description,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-              const SizedBox(height: 12),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Chip(
-                    avatar: const Icon(Icons.person, size: 16),
-                    label: Text(course.instructor),
-                  ),
-                  Chip(
-                    avatar: const Icon(Icons.play_lesson, size: 16),
-                    label: Text('${course.lessons.length} lessons'),
-                  ),
-                ],
-              ),
-            ],
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        leading: Container(
+          width: 56,
+          height: 56,
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.primary.withOpacity(0.12),
+            borderRadius: BorderRadius.circular(8),
           ),
+          child: const Icon(Icons.book, size: 30),
+        ),
+        title: Text(
+          course.title,
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+        ),
+        subtitle: Text(
+          course.description,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        ),
+        trailing: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.play_lesson, size: 18, color: Theme.of(context).colorScheme.primary),
+            const SizedBox(height: 4),
+            Text('${course.lessons.length}'),
+          ],
         ),
       ),
     );
